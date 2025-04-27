@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Middel Informatie</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button onclick="window.location.href='index.html'">← Terug naar symptomen</button>
+  <div id="middelInfo"></div>
+
+  <script src="data.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const middelNaam = params.get('middel');
+
+    const middel = middelenData.find(m => m.naam === middelNaam);
+
+    const middelDiv = document.getElementById('middelInfo');
+
+    if (middel) {
+      middelDiv.innerHTML = `
+        <h1>${middel.naam}</h1>
+        <h2>Symptomen:</h2>
+        <ul>
+          ${middel.symptomen.map(s => {
+            const uitleg = uitlegData[s.symptoom] ? ` <a href="#" onclick="alert('${uitlegData[s.symptoom]}'); return false;">[uitleg]</a>` : '';
+            return `<li>${s.symptoom} (${s.status})${uitleg}</li>`;
+          }).join('')}
+        </ul>
+        <h2>Behandeling:</h2>
+        <p>${middel.behandeling}</p>
+      `;
+    } else {
+      middelDiv.innerHTML = "<p>Middel niet gevonden.</p>";
+    }
+  </script>
+</body>
+</html>
