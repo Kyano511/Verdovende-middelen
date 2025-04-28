@@ -6,7 +6,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="banner">
+    <img src="ehbo%20logo.jpg" alt="EHBO Hilversum Logo">
+  </div>
+
   <button onclick="window.location.href='index.html'">← Terug naar symptomen</button>
+
   <div id="middelInfo"></div>
 
   <script src="data.js"></script>
@@ -23,7 +28,7 @@
         <h1>${middel.naam}</h1>
         <h2>Symptomen:</h2>
         <ul>
-          ${middel.symptomen.map(s => {
+          ${middel.symptomen.filter(s => s.status !== "nvt").map(s => {
             const uitleg = uitlegData[s.symptoom] ? ` <a href="#" onclick="alert('${uitlegData[s.symptoom]}'); return false;">[uitleg]</a>` : '';
             return `<li>${s.symptoom} (${s.status})${uitleg}</li>`;
           }).join('')}
