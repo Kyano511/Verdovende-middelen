@@ -24,24 +24,33 @@ document.getElementById('symptomForm').addEventListener('submit', function(event
   const selected = Array.from(document.querySelectorAll('input[name="symptoms"]:checked'))
                         .map(el => el.value);
 
-  const mogelijkeMiddelen = middelenData.filter(middel =>
-    middel.symptomen.some(s => selected.includes(s.symptoom))
-  );
+  // Eerst: voor elk middel tellen hoeveel symptomen matchen
+  const mogelijkeMiddelen = middelenData.map(middel => {
+    const matchCount = middel.symptomen.filter(s => selected.includes(s.symptoom)).length;
+    return { middel, matchCount };
+  }).filter(entry => entry.matchCount > 0);
+
+  // Sorteren op matchCount aflopend
+  mogelijkeMiddelen.sort((a, b) => b.matchCount - a.matchCount);
 
   const resultsDiv = document.getElementById('results');
   resultsDiv.innerHTML = "<h2>Mogelijke middelen:</h2>";
 
-  mogelijkeMiddelen.forEach(middel => {
+  mogelijkeMiddelen.forEach(entry => {
     const div = document.createElement('div');
     div.className = 'middel';
-    div.textContent = middel.naam;
+    div.innerHTML = `${entry.middel.naam} (${entry.matchCount} symptomen)`;
     div.addEventListener('click', () => {
-      window.location.href = `middel.html?middel=${encodeURIComponent(middel.naam)}`;
+      window.location.href = `middel.html?middel=${encodeURIComponent(entry.middel.naam)}`;
     });
     resultsDiv.appendChild(div);
   });
 
   if (mogelijkeMiddelen.length === 0) {
+    resultsDiv.innerHTML += "<p>Geen matchende middelen gevonden.</p>";
+  }
+});
+
     resultsDiv.innerHTML += "<p>Geen matchende middelen gevonden.</p>";
   }
 });
